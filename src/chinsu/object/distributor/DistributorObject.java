@@ -14,10 +14,10 @@ public class DistributorObject {
     private String distributor_name;
     private String distributor_address;
     private String distributor_phone;
-    private String distributor_imamount;
+    private int distributor_imamount;
     public DistributorObject() {
     }
-    public DistributorObject(int distributor_id, String distributor_name, String distributor_address, String distributor_phone, String distributor_imamount) {
+    public DistributorObject(int distributor_id, String distributor_name, String distributor_address, String distributor_phone,int distributor_imamount) {
         this.distributor_id = distributor_id;
         this.distributor_name = distributor_name;
         this.distributor_address = distributor_address;
@@ -48,10 +48,10 @@ public class DistributorObject {
     public void setDistributor_phone(String distributor_phone) {
         this.distributor_phone = distributor_phone;
     }
-    public String getDistributor_imamount() {
+    public int getDistributor_imamount() {
         return distributor_imamount;
     }
-    public void setDistributor_imamount(String distributor_imamount) {
+    public void setDistributor_imamount(int distributor_imamount) {
         this.distributor_imamount = distributor_imamount;
     }
 }

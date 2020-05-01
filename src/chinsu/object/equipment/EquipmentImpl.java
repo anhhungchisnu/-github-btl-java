@@ -21,9 +21,26 @@ import java.util.logging.Logger;
 public class EquipmentImpl extends BasicImpl implements Equipment{
     Connection con = ConnectionDB.getConnection();
     
-    private boolean isExisting(EquipmentObject item){
+    private boolean isExistingname(EquipmentObject item){
         boolean flag = false;
         String sql = "SELECT * FROM tblequipment WHERE equipment_name = '" + item.getEquipment_name() + "'";
+        ResultSet rs = this.gets(sql);
+        if(rs !=null){
+            try{
+                if(rs.next()){
+                    flag=true;
+                }
+                rs.close();
+            }
+            catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return flag;
+    }
+    private boolean isExistingid(EquipmentObject item){
+        boolean flag = false;
+        String sql = "SELECT * FROM tblequipment WHERE equipment_id = '" + item.getEquipment_id() + "'";
         ResultSet rs = this.gets(sql);
         if(rs !=null){
             try{
@@ -41,7 +58,7 @@ public class EquipmentImpl extends BasicImpl implements Equipment{
     @Override
     public boolean addEquipment(EquipmentObject item) {
         try{
-            if(isExisting(item)){
+            if(isExistingname(item)){
                 return false;
             }
             String sql = "INSERT INTO tblequipment(equipment_name,equipment_amount,distributor_id,type_id) VALUES (?,?,?,?)";
@@ -61,6 +78,9 @@ public class EquipmentImpl extends BasicImpl implements Equipment{
     @Override
     public boolean editEquipment(EquipmentObject item) {
         try{
+            if(!isExistingid(item)){
+                return false;
+            }
             String sql = "UPDATE tblequipment SET ";
             sql+="equipment_name=?,equipment_amount=?,distributor_id=?,type_id=? ";
             sql+="WHERE equipment_id=?";
@@ -83,6 +103,9 @@ public class EquipmentImpl extends BasicImpl implements Equipment{
     @Override
     public boolean delEquipment(EquipmentObject item) {
         try {
+            if(!isExistingid(item)){
+                return false;
+            }
             String sql = "DELETE FROM tblequipment WHERE equipment_id = ?";     
             PreparedStatement pre = this.con.prepareCall(sql);
             pre.setInt(1,item.getEquipment_id());
@@ -108,9 +131,8 @@ public class EquipmentImpl extends BasicImpl implements Equipment{
         Equipment e = new EquipmentImpl();
         
         EquipmentObject obj = new EquipmentObject();
-        obj.setEquipment_id(2);
-        obj.setEquipment_amount(4);
-        e.editEquipment(obj);
+        obj.setEquipment_id(4);
+        e.delEquipment(obj);
 
         
         ResultSet rs = e.getEquipments();

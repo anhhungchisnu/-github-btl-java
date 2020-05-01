@@ -20,9 +20,26 @@ import java.util.logging.Logger;
  */
 public class TypeImpl extends BasicImpl implements Type{
     Connection con = ConnectionDB.getConnection();
-    private boolean isExisting(TypeObject item){
+    private boolean isExistingname(TypeObject item){
         boolean flag = false;
         String sql = "SELECT * FROM tbltype WHERE type_name = '" + item.getType_name() + "'";
+        ResultSet rs = this.gets(sql);
+        if(rs != null){
+            try{
+                if(rs.next()){
+                    flag = true;
+                }
+                rs.close();
+            }
+            catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return flag;
+    }
+    private boolean isExistingid(TypeObject item){
+        boolean flag = false;
+        String sql = "SELECT * FROM tbltype WHERE type_id = '" + item.getType_id() + "'";
         ResultSet rs = this.gets(sql);
         if(rs != null){
             try{
@@ -40,7 +57,7 @@ public class TypeImpl extends BasicImpl implements Type{
     @Override
     public boolean addType(TypeObject item) {
         try {
-            if(isExisting(item)){
+            if(isExistingname(item)){
                 return false;
             }
             String sql = "INSERT INTO tbltype(type_name) ";
@@ -59,6 +76,9 @@ public class TypeImpl extends BasicImpl implements Type{
     @Override
     public boolean editType(TypeObject item) {
         try {
+            if(!isExistingid(item)){
+                return false;
+            }
             String sql = "UPDATE tbltype SET ";
             sql += "type_name=? WHERE type_id = ?";
             PreparedStatement pre = this.con.prepareStatement(sql);
@@ -75,6 +95,9 @@ public class TypeImpl extends BasicImpl implements Type{
     @Override
     public boolean delType(TypeObject item) {
         try {
+            if(!isExistingid(item)){
+                return false;
+            }
             String sql = "DELETE FROM tbltype WHERE type_id =?";
             PreparedStatement pre = this.con.prepareCall(sql);
             pre.setInt(1, item.getType_id());
@@ -99,8 +122,10 @@ public class TypeImpl extends BasicImpl implements Type{
         Type t = new TypeImpl();
         
         TypeObject obj = new TypeObject();
-        obj.setType_name("headphone");
-        t.addType(obj);
+        //obj.setType_id(3);
+        obj.setType_id(2);
+        obj.setType_name("sung");
+        t.delType(obj);
         
         ResultSet rs = t.getTypes();
         String row;

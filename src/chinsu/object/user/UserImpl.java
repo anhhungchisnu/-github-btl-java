@@ -39,6 +39,22 @@ public class UserImpl extends BasicImpl implements User {
             }
         }
         return flag;
+    }private boolean isExistingid(UserObject item) {
+        boolean flag = false;
+        String sql = "SELECT * FROM tbluser WHERE user_id='" + item.getUser_id() + "' ";
+        ResultSet rs = this.gets(sql);
+        if (rs != null) {
+            try {
+                if (rs.next()) {
+                    flag = true;
+                }
+                rs.close();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return flag;
     }
 
     @Override
@@ -65,6 +81,9 @@ public class UserImpl extends BasicImpl implements User {
     @Override
     public boolean editUser(UserObject item) {
         try {
+            if(!isExistingid(item)){
+                return false;
+            }
             String sql = "UPDATE tbluser SET ";
             sql += "user_name=?, user_pass=?, user_permission=? ";
             sql += "WHERE user_id=?";
@@ -85,6 +104,9 @@ public class UserImpl extends BasicImpl implements User {
     @Override
     public boolean delUser(UserObject item) {
         try {
+            if(!isExistingid(item)){
+                return false;
+            }
             String sql = "DELETE FROM tbluser WHERE user_id=?";
             
             PreparedStatement pre = this.con.prepareStatement(sql);
@@ -121,12 +143,12 @@ public class UserImpl extends BasicImpl implements User {
             
             UserObject user = new UserObject();
             user.setUser_id(2);
-            user.setUser_name("lancuto");
-            user.setUser_pass("123456789");
+            user.setUser_name("lancuto123w");
+            user.setUser_pass("123456789123");
             user.setUser_permission(1);
-            boolean result= u.editUser(user);
+            boolean result= u.delUser(user);
             if(!result) {
-                System.out.println("\n********an cut, an dau buoi");
+                System.out.println("ad");
             }
             
             ResultSet rs = u.getUsers();
